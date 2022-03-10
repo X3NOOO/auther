@@ -17,65 +17,62 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
-	"fmt"
-	"strconv"
-	"strings"
-
 	"github.com/X3NOOO/logger"
 	"github.com/spf13/cobra"
 )
 
-// listCmd represents the list command
-var listCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List information",
-	Long:  `List information about all your tokens`,
+// getCmd represents the get command
+var getCmd = &cobra.Command{
+	Use:   "get",
+	Short: "A brief description of your command",
+	Long: `A longer description that spans multiple lines and likely contains examples
+and usage of using your command. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		list()
+		get(args)
 	},
 }
 
-/*
-* 1. read database from db_path
-* 2. decrypt database 			//TODO: or maybe encrypt only secret so you can use list without entering password?
-* 3. read decrypted database
-* 4. unmarshal json (or yaml?)
-* 5. print name and issuer
- */
-func list() {
-	// run all things from here, not from Run: func
-
+func get(names []string){
 	// configure logger
-	l := logger.NewLogger("list.go")
+	l := logger.NewLogger("get.go")
 	l.SetVerbosity(Verbose)
-	l.Debugln("list called")
+	l.Debugln("get called")
+
+	l.Debugln("args:", names)
 
 	// read database
 	db_json, err := ReadDb(Db_path)
 	if(err != nil){
 		l.Fatalln(1, err)
 	}
-
 	l.Debugln("json database: ", db_json)
-	l.Debugln("entries in database: ", len(db_json))
 
-	// get non-secret info from database and put it into variables so we can print it
-	for i := 0; i<=len(db_json)-1; i++{
-		fmt.Println(strings.ToUpper(strconv.Itoa(i+1) + ". " + db_json[i].Type) + ": " + db_json[i].Name + "@" + db_json[i].Issuer)
+	// get through all names
+	for i := 0; i <= len(names)-1; i++{
+		// get through all database names
+		for j := 0; j <= len(db_json)-1;j++{
+			if(db_json[j].Name==names[i]){
+				l.Debugln("match: " + db_json[j].Name) //TODO: change match to generated otp
+			}
+		}
 	}
 
 }
 
 func init() {
-	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(getCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// getCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// getCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
