@@ -20,8 +20,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"strconv"
 	"strings"
 
+	"github.com/X3NOOO/auther/values"
 	"github.com/X3NOOO/logger"
 	"github.com/spf13/cobra"
 )
@@ -34,20 +36,6 @@ var listCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		list()
 	},
-}
-
-type db_secret_struct struct {
-	Secret string		`json:"secret"`
-	Algorithm string	`json:"algorithm"`
-	Digits int			`json:"digits"`
-	Period int			`json:"period"`
-}
-
-type db_struct struct {
-	Type	string				`json:"type"`
-	Name	string				`json:"name"`
-	Issuer	string				`json:"issuer"`
-	Secret	db_secret_struct 	`json:"secret"`
 }
 
 /*
@@ -66,18 +54,18 @@ func list() {
 	l.Debugln("list called")
 
 	// read database
-	db_encrypted, err := ioutil.ReadFile(db_path)
+	db_encrypted, err := ioutil.ReadFile(Db_path)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
 	l.Debugln("encrypted database: ", db_encrypted)
 
 	// decryption
-	db_decrypted := db_encrypted
+	db_decrypted := db_encrypted //TODO: add decryption
 	l.Debugln("decrypted database: ", string(db_decrypted))
 
 	// parsing json
-	var db_json []db_struct
+	var db_json []values.Db_struct
 	err = json.Unmarshal(db_decrypted, &db_json)
 	if err != nil {
 		l.Fatalln(1, err)
@@ -85,12 +73,9 @@ func list() {
 	l.Debugln("json database: ", db_json)
 	l.Debugln("entries in database: ", len(db_json))
 
-	// get non-secret info from database and put it into variables so we can print ir
-	// info_name := make([]string, len(db_json))
-	// info_type := make([]string, len(db_json))
-	// info_issuer := make([]string, len(db_json))
+	// get non-secret info from database and put it into variables so we can print it
 	for i := 0; i<=len(db_json)-1; i++{
-		fmt.Println(strings.ToUpper(db_json[i].Type) + ": " + db_json[i].Name + "@" + db_json[i].Issuer)
+		fmt.Println(strings.ToUpper(strconv.Itoa(i+1) + ". " + db_json[i].Type) + ": " + db_json[i].Name + "@" + db_json[i].Issuer)
 	}
 
 }

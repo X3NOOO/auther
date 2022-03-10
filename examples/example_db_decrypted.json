@@ -1,0 +1,25 @@
+
+[
+    {
+      "type": "topt",
+      "name": "NAME",
+      "issuer": "ISSUER",
+      "secret": {
+        "secret": "SECRET",
+        "algorithm": "ALGORITHM",
+        "digits": 6,
+        "period": 30
+      }
+    },
+    {
+      "type": "topt",
+      "name": "NAME2",
+      "issuer": "ISSUER2",
+      "secret": {
+        "secret": "SECRET2",
+        "algorithm": "ALGORITHM2",
+        "digits": 6,
+        "period": 30
+      }
+    }
+  ]

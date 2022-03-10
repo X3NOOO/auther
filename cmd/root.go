@@ -27,7 +27,7 @@ import (
 
 var (
 	Verbose int
-	db_path string = values.DB_PATH
+	Db_path string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -41,8 +41,8 @@ var rootCmd = &cobra.Command{
 		l := logger.NewLogger("root.go")
 		l.SetVerbosity(Verbose)
 		l.Debugln("Verbosity:", Verbose)
-		if(!fileExists(db_path)){
-			l.Infoln(db_path + " does not exist")
+		if(!fileExists(Db_path)){
+			l.Infoln(Db_path + " does not exist")
 		}
 	},
 }
@@ -78,6 +78,5 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.PersistentFlags().IntVarP(&Verbose, "verbose", "v", 3, "verbosity of output (0-5)")
+	rootCmd.PersistentFlags().StringVarP(&Db_path, "config", "c", values.DB_PATH, "path to config")
 }
-
-

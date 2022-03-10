@@ -27,8 +27,8 @@ TODO pase here `auther -h` output
 
 ## TODO
 
-- [ ] add `list` option
-- [ ] add `{name}` option
+- [X] add `list` option
+- [ ] add `get` options
 - [ ] encryption
 - [ ] add `add` option
 - [ ] add `rem` option
