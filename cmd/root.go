@@ -33,31 +33,30 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "auther",
-	Short: "manage your topt tokens",
-	Long: `auther is program to manage your 2fa (topt) tokens`,
+	Short: "manage your totp tokens",
+	Long:  `auther is program to manage your 2fa (totp) tokens`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	Run: func(cmd *cobra.Command, args []string) {	
+	Run: func(cmd *cobra.Command, args []string) {
 		l := logger.NewLogger("root.go")
 		l.SetVerbosity(Verbose)
 		l.Debugln("Verbosity:", Verbose)
-		if(!fileExists(Db_path)){
+		if !fileExists(Db_path) {
 			l.Infoln(Db_path + " does not exist")
 		}
 	},
 }
 
-func fileExists(name string) (bool) {
-    _, err := os.Stat(name)
-    if err == nil {
-        return true
-    }
-    if errors.Is(err, os.ErrNotExist) {
-        return false
-    }
-    return false
+func fileExists(name string) bool {
+	_, err := os.Stat(name)
+	if err == nil {
+		return true
+	}
+	if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+	return false
 }
-
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -78,5 +77,5 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.PersistentFlags().IntVarP(&Verbose, "verbose", "v", 3, "verbosity of output (0-5)")
-	rootCmd.PersistentFlags().StringVarP(&Db_path, "config", "c", values.DB_PATH, "path to config")
+	rootCmd.PersistentFlags().StringVarP(&Db_path, "database", "d", values.DB_PATH, "path to database")
 }

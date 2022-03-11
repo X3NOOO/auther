@@ -24,6 +24,7 @@ type Db_secret_struct struct {
 	Algorithm string	`json:"algorithm"`
 	Digits int			`json:"digits"`
 	Period int			`json:"period"`
+	Counter int64		`json:"counter"`
 }
 
 type Db_struct struct {

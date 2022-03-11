@@ -22,6 +22,7 @@ import (
 	"strings"
 
 	"github.com/X3NOOO/logger"
+	"github.com/X3NOOO/auther/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -31,18 +32,18 @@ var listCmd = &cobra.Command{
 	Short: "List information",
 	Long:  `List information about all your tokens`,
 	Run: func(cmd *cobra.Command, args []string) {
-		list()
+		List()
 	},
 }
 
 /*
 * 1. read database from db_path
-* 2. decrypt database 			//TODO: or maybe encrypt only secret so you can use list without entering password?
+* 2. decrypt database 			// TODO or maybe encrypt only secret so you can use list without entering password?
 * 3. read decrypted database
 * 4. unmarshal json (or yaml?)
 * 5. print name and issuer
  */
-func list() {
+func List() {
 	// run all things from here, not from Run: func
 
 	// configure logger
@@ -51,7 +52,7 @@ func list() {
 	l.Debugln("list called")
 
 	// read database
-	db_json, err := ReadDb(Db_path)
+	db_json, err := utils.ReadDB(Db_path)
 	if(err != nil){
 		l.Fatalln(1, err)
 	}

@@ -1,4 +1,4 @@
-package cmd
+package utils
 
 import (
 	"encoding/json"
@@ -7,7 +7,8 @@ import (
 	"github.com/X3NOOO/auther/values"
 )
 
-func ReadDb(path string) ([]values.Db_struct, error){
+// read database, decrypt it and return struct with it
+func ReadDB(path string) ([]values.Db_struct, error){
 	// read
 	db_encrypted, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -15,7 +16,7 @@ func ReadDb(path string) ([]values.Db_struct, error){
 	}
 
 	// decrypt
-	// TODO: add encryption
+	// TODO add encryption
 	db_decrypted := db_encrypted
 
 	// get json

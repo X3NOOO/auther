@@ -17,6 +17,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
+	"fmt"
+	"strings"
+
+	"github.com/X3NOOO/auther/utils"
 	"github.com/X3NOOO/logger"
 	"github.com/spf13/cobra"
 )
@@ -32,11 +36,12 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		get(args)
+		Get(args)
 	},
 }
 
-func get(names []string){
+// get totp codes based on args
+func Get(names []string) {
 	// configure logger
 	l := logger.NewLogger("get.go")
 	l.SetVerbosity(Verbose)
@@ -45,18 +50,33 @@ func get(names []string){
 	l.Debugln("args:", names)
 
 	// read database
-	db_json, err := ReadDb(Db_path)
-	if(err != nil){
+	db_json, err := utils.ReadDB(Db_path)
+	if err != nil {
 		l.Fatalln(1, err)
 	}
 	l.Debugln("json database: ", db_json)
 
 	// get through all names
-	for i := 0; i <= len(names)-1; i++{
+	for i := 0; i <= len(names)-1; i++ {
 		// get through all database names
-		for j := 0; j <= len(db_json)-1;j++{
-			if(db_json[j].Name==names[i]){
-				l.Debugln("match: " + db_json[j].Name) //TODO: change match to generated otp
+		for j := 0; j <= len(db_json)-1; j++ {
+			if db_json[j].Name == names[i] {
+				// l.Debugln("match: " + db_json[j].Name) // TODO change match to generated otp
+				if(strings.ToLower(db_json[j].Type) == "totp") {
+					code, err := utils.GenTOTP([]byte(db_json[i].Secret.Secret))
+					if(err != nil){
+						l.Fatalln(1, err)
+					}
+					fmt.Println(code)
+					// TODO add copying code to clipboard
+				} else if(strings.ToLower(db_json[j].Type) == "hotp") {
+					code, err := utils.GenHOTP([]byte(db_json[i].Secret.Secret), db_json[i].Secret.Counter)
+					if(err != nil){
+						l.Fatalln(1, err)
+					}
+					fmt.Println(code)
+					// TODO add copying code to clipboard
+				}
 			}
 		}
 	}

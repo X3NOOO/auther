@@ -1,6 +1,6 @@
 # auther
 
-auther is program to manage your 2fa (topt) tokens
+auther is program to manage your 2fa (totp) tokens
 
 ## installation
 
@@ -15,7 +15,7 @@ or
 
 ## usage
 
-TODO pase here `auther -h` output
+TODO paste here `auther -h` output
 
 ## donation
 
@@ -28,8 +28,8 @@ TODO pase here `auther -h` output
 ## TODO
 
 - [X] add `list` option
+- [X] add `--database`/`-d` flag
 - [ ] add `get` options
-- [ ] encryption
 - [ ] add `add` option
 - [ ] add `rem` option
-- [ ] add `--database`/`-d` flag
+- [ ] encryption
