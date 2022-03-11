@@ -36,6 +36,7 @@ func GenHOTP(secret []byte, counter int64)(string, error){
 	return code, nil
 }
 
+// generate otp code form uri
 func GenFromURI(uri string)(string, error){
 	otp, err := gotp.OTPFromUri(uri)
 	if(err != nil){

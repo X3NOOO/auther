@@ -21,8 +21,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/X3NOOO/logger"
 	"github.com/X3NOOO/auther/utils"
+	"github.com/X3NOOO/logger"
 	"github.com/spf13/cobra"
 )
 
@@ -37,7 +37,7 @@ var listCmd = &cobra.Command{
 }
 
 /*
-* 1. read database from db_path
+* 1. read database from DB_path
 * 2. decrypt database 			// TODO or maybe encrypt only secret so you can use list without entering password?
 * 3. read decrypted database
 * 4. unmarshal json (or yaml?)
@@ -52,17 +52,17 @@ func List() {
 	l.Debugln("list called")
 
 	// read database
-	db_json, err := utils.ReadDB(Db_path)
-	if(err != nil){
+	db, err := utils.ReadDB(DB_path)
+	if err != nil {
 		l.Fatalln(1, err)
 	}
 
-	l.Debugln("json database: ", db_json)
-	l.Debugln("entries in database: ", len(db_json))
+	l.Debugln("json database: ", db)
+	l.Debugln("entries in database: ", len(db))
 
 	// get non-secret info from database and put it into variables so we can print it
-	for i := 0; i<=len(db_json)-1; i++{
-		fmt.Println(strings.ToUpper(strconv.Itoa(i+1) + ". " + db_json[i].Type) + ": " + db_json[i].Name + "@" + db_json[i].Issuer)
+	for i := 0; i <= len(db)-1; i++ {
+		fmt.Println(strings.ToUpper(strconv.Itoa(i+1)+". "+db[i].Type) + ": " + db[i].Name + "@" + db[i].Issuer)
 	}
 
 }

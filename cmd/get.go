@@ -28,13 +28,8 @@ import (
 // getCmd represents the get command
 var getCmd = &cobra.Command{
 	Use:   "get",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Generate otp codes",
+	Long:  `Generate otp codes from arguments`,
 	Run: func(cmd *cobra.Command, args []string) {
 		Get(args)
 	},
@@ -50,28 +45,28 @@ func Get(args []string) {
 	l.Debugln("args:", args)
 
 	// read database
-	db_json, err := utils.ReadDB(Db_path)
+	db, err := utils.ReadDB(DB_path)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
-	l.Debugln("json database: ", db_json)
+	l.Debugln("json database:", db)
 
 	// get through all args
 	for i := 0; i <= len(args)-1; i++ {
 		// get through all database names
-		for j := 0; j <= len(db_json)-1; j++ {
-			if db_json[j].Name == args[i] {
-				// l.Debugln("match: " + db_json[j].Name) // TODO change match to generated otp
-				if(strings.ToLower(db_json[j].Type) == "totp") {
-					code, err := utils.GenTOTP([]byte(db_json[i].Secret.Secret))
-					if(err != nil){
+		for j := 0; j <= len(db)-1; j++ {
+			if db[j].Name == args[i] {
+				// l.Debugln("match: " + db[j].Name) // TODO change match to generated otp
+				if strings.ToLower(db[j].Type) == "totp" {
+					code, err := utils.GenTOTP([]byte(db[i].Secret.Secret))
+					if err != nil {
 						l.Fatalln(1, err)
 					}
 					fmt.Println(code)
 					// TODO add copying code to clipboard
-				} else if(strings.ToLower(db_json[j].Type) == "hotp") {
-					code, err := utils.GenHOTP([]byte(db_json[i].Secret.Secret), db_json[i].Secret.Counter)
-					if(err != nil){
+				} else if strings.ToLower(db[j].Type) == "hotp" {
+					code, err := utils.GenHOTP([]byte(db[i].Secret.Secret), db[i].Secret.Counter)
+					if err != nil {
 						l.Fatalln(1, err)
 					}
 					fmt.Println(code)
@@ -79,12 +74,13 @@ func Get(args []string) {
 				}
 			}
 		}
+
 		// if argument have uri-format get totp from it
-		if(len(args[i])>=15){
-			if(args[i][:15] == "otpauth://totp/" || args[i][:15] == "otpauth://hotp/"){
+		if len(args[i]) >= 15 {
+			if args[i][:15] == "otpauth://totp/" || args[i][:15] == "otpauth://hotp/" {
 				l.Infoln("argument have uri format - trying to generate code from it")
 				code, err := utils.GenFromURI(args[i])
-				if(err != nil){
+				if err != nil {
 					l.Fatalln(1, err)
 				}
 				fmt.Println(code)
