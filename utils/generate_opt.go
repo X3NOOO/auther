@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/uaraven/gotp"
@@ -33,4 +34,18 @@ func GenHOTP(secret []byte, counter int64)(string, error){
 	}
 
 	return code, nil
+}
+
+func GenFromURI(uri string)(string, error){
+	otp, err := gotp.OTPFromUri(uri)
+	if(err != nil){
+		return "", err
+	}
+	// check ifuri is totp or hotp
+	if(strings.ToLower(uri[10:14]) == "totp"){
+		return GenTOTP(otp.OTP.GetSecret())
+	} else if(strings.ToLower(uri[10:14]) == "hotp"){
+		return GenHOTP(otp.OTP.GetSecret(), int64(otp.OTP.GetHash()))
+	}
+	return "", errors.New("uri isn't valid")
 }

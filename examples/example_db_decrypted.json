@@ -6,6 +6,7 @@
       "issuer": "ISSUER",
       "secret": {
         "secret": "SECRET",
+        "algorithm": "ALGORITHM",
         "digits": 6,
         "period": 30
       }
@@ -16,6 +17,7 @@
       "issuer": "ISSUER2",
       "secret": {
         "secret": "SECRET2",
+        "algorithm": "ALGORITHM2",
         "digits": 6,
         "period": 30,
         "counter": 10

@@ -41,13 +41,13 @@ to quickly create a Cobra application.`,
 }
 
 // get totp codes based on args
-func Get(names []string) {
+func Get(args []string) {
 	// configure logger
 	l := logger.NewLogger("get.go")
 	l.SetVerbosity(Verbose)
 	l.Debugln("get called")
 
-	l.Debugln("args:", names)
+	l.Debugln("args:", args)
 
 	// read database
 	db_json, err := utils.ReadDB(Db_path)
@@ -56,11 +56,11 @@ func Get(names []string) {
 	}
 	l.Debugln("json database: ", db_json)
 
-	// get through all names
-	for i := 0; i <= len(names)-1; i++ {
+	// get through all args
+	for i := 0; i <= len(args)-1; i++ {
 		// get through all database names
 		for j := 0; j <= len(db_json)-1; j++ {
-			if db_json[j].Name == names[i] {
+			if db_json[j].Name == args[i] {
 				// l.Debugln("match: " + db_json[j].Name) // TODO change match to generated otp
 				if(strings.ToLower(db_json[j].Type) == "totp") {
 					code, err := utils.GenTOTP([]byte(db_json[i].Secret.Secret))
@@ -79,8 +79,18 @@ func Get(names []string) {
 				}
 			}
 		}
+		// if argument have uri-format get totp from it
+		if(len(args[i])>=15){
+			if(args[i][:15] == "otpauth://totp/" || args[i][:15] == "otpauth://hotp/"){
+				l.Infoln("argument have uri format - trying to generate code from it")
+				code, err := utils.GenFromURI(args[i])
+				if(err != nil){
+					l.Fatalln(1, err)
+				}
+				fmt.Println(code)
+			}
+		}
 	}
-
 }
 
 func init() {
