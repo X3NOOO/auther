@@ -83,25 +83,28 @@ func Add() {
 		},
 	}
 
-	// new_db = db + new_entry
-	new_db := append(db, new_entry)
-	l.Debugln("new_entry:", new_db)
-	new_db_json, err := json.Marshal(new_db)
-	l.Debugln("new db:", string(new_db_json))
+	// db_new = db + new_entry
+	db_new := append(db, new_entry)
+	l.Debugln("new_entry:", db_new)
+
+	// convert db_new to json
+	db_new_json, err := json.Marshal(db_new)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
+	l.Debugln("new db:", string(db_new_json))
 
-	// encrypt db
-	new_db_encrypted := new_db_json
+	// encrypt db_new_json
+	// TODO add encryption
+	db_new_encrypted := db_new_json
 
-	// write db to DB_path
+	// write db_new_encrypted to DB_path
 	stat, err := os.Stat(DB_path)
-	if(err != nil){
+	if err != nil {
 		l.Fatalln(1, err)
 	}
 	mode := stat.Mode().Perm()
-	ioutil.WriteFile(DB_path, []byte(new_db_encrypted), mode)
+	ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
 }
 
 func init() {

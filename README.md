@@ -30,7 +30,7 @@ TODO paste here `auther -h` output
 - [X] add `list` option
 - [X] add `--database`/`-d` flag
 - [X] add `get` options
-- [ ] add `add` option
+- [X] add `add` option
 - [ ] add `rem` option
 - [ ] support of different algorithms
 - [ ] encryption
