@@ -18,8 +18,8 @@ package cmd
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	"os"
+	// "io/ioutil"
+	// "os"
 
 	"github.com/X3NOOO/auther/utils"
 	"github.com/X3NOOO/auther/values"
@@ -54,17 +54,22 @@ func Rem(args []string) {
 	}
 	l.Debugln("json database:", db)
 
-	var db_new []values.Db_struct
+	var db_new []values.Db_struct = db
 	// get through all args
 	for i := 0; i <= len(args)-1; i++ {
 		// get through all database names
-		for j := 0; j <= len(db)-1; j++ {
+		for j := 0; j <= len(db_new)-1; j++ {
 			if db[j].Name == args[i] {
-				db_new = RemoveIndex(db, j)
+				db_new = RemoveIndex(db_new, j)
 				l.Debugln("db_new:", db_new)
 			}
 		}
 	}
+
+	// if we didnt found args in db end program
+	// if(db_new == nil){
+		// l.Fatalln(1, "Not found")
+	// }
 
 	// convert db_new to json
 	db_new_json, err := json.Marshal(db_new)
@@ -75,16 +80,16 @@ func Rem(args []string) {
 
 	// encrypt db_new_json
 	// TODO add encryption
-	db_new_encrypted := db_new_json
+	// db_new_encrypted := db_new_json
 	// _ = db_new_encrypted
 
 	// write db_new_json to DB_path
-	stat, err := os.Stat(DB_path)
-	if err != nil {
-		l.Fatalln(1, err)
-	}
-	mode := stat.Mode().Perm()
-	ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
+	// stat, err := os.Stat(DB_path)
+	// if err != nil {
+		// l.Fatalln(1, err)
+	// }
+	// mode := stat.Mode().Perm()
+	// ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
 }
 
 func init() {
