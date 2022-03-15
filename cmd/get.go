@@ -51,31 +51,33 @@ func Get(args []string) {
 	}
 	l.Debugln("json database:", db)
 
+	// decrypt database
+	// TODO add encryption
+	db = db
+
 	// get through all args
 	for i := 0; i <= len(args)-1; i++ {
 		// get through all database names
 		for j := 0; j <= len(db)-1; j++ {
 			if db[j].Name == args[i] {
-				// l.Debugln("match: " + db[j].Name) // TODO change match to generated otp
 				if strings.ToLower(db[j].Type) == "totp" {
 					code, err := utils.GenTOTP([]byte(db[i].Secret.Secret))
 					if err != nil {
 						l.Fatalln(1, err)
 					}
 					fmt.Println(code)
-					// TODO add copying code to clipboard
 				} else if strings.ToLower(db[j].Type) == "hotp" {
 					code, err := utils.GenHOTP([]byte(db[i].Secret.Secret), db[i].Secret.Counter)
 					if err != nil {
 						l.Fatalln(1, err)
 					}
 					fmt.Println(code)
-					// TODO add copying code to clipboard
+					// TODO add increasing counter by 1 every time this block is called
 				}
 			}
 		}
 
-		// if argument have uri-format get totp from it
+		// if argument have uri-format get code from it
 		if len(args[i]) >= 15 {
 			if args[i][:15] == "otpauth://totp/" || args[i][:15] == "otpauth://hotp/" {
 				l.Infoln("argument have uri format - trying to generate code from it")
@@ -87,6 +89,7 @@ func Get(args []string) {
 			}
 		}
 	}
+	// TODO add copying code to clipboard
 }
 
 func init() {
