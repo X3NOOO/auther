@@ -1,21 +1,27 @@
 package utils
 
 import (
+	"crypto"
+	_ "crypto/md5"
+	_ "crypto/sha256"
+	_ "crypto/sha512"
 	"errors"
 	"strings"
 	"time"
+
+	// "time"
 
 	"github.com/uaraven/gotp"
 )
 
 // generate totp code based on secret
-func GenTOTP(secret []byte)(string, error){
-	timestamp := time.Now()
-	// timestamp := time.Date(t, time.UTC)
-	totp := gotp.NewDefaultTOTP(secret)
-	code := totp.At(timestamp)
+func GenTOTP(secret []byte, digits int64, algorithm crypto.Hash)(string, error){
+	// totp := gotp.NewDefaultTOTP(secret)
+	// timest := time.Now()
+	totp := gotp.NewTOTPHash(secret, int(digits), 30, 0, algorithm)
+	code := totp.Now()
 
-	err := totp.Verify(code, timestamp.Unix())
+	err := totp.Verify(code, time.Now().Unix())
 	if(!err){
 		return "", errors.New("cannot verify totp")
 	}
@@ -44,9 +50,22 @@ func GenFromURI(uri string)(string, error){
 	}
 	// check ifuri is totp or hotp
 	if(strings.ToLower(uri[10:14]) == "totp"){
-		return GenTOTP(otp.OTP.GetSecret())
+		return GenTOTP(otp.OTP.GetSecret(), int64(otp.OTP.GetDigits()), otp.OTP.GetHash())
 	} else if(strings.ToLower(uri[10:14]) == "hotp"){
 		return GenHOTP(otp.OTP.GetSecret(), int64(otp.OTP.GetHash()))
 	}
 	return "", errors.New("uri isn't valid")
+}
+
+func GetHash(algo string)(crypto.Hash){
+	switch strings.ToUpper(algo){
+	case "SHA1", "SHA-1":
+		return crypto.SHA1
+	case "SHA256", "SHA-256":
+		return crypto.SHA256
+	case "MD5", "MD-5":
+		return crypto.MD5
+	default:
+		return crypto.SHA1
+	}
 }

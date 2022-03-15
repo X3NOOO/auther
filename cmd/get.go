@@ -59,22 +59,24 @@ func Get(args []string) {
 	// db = db
 
 	// get through all args
+	var code string
 	for i := 0; i <= len(args)-1; i++ {
 		// get through all database names
 		for j := 0; j <= len(db)-1; j++ {
 			if db[j].Name == args[i] {
 				if strings.ToLower(db[j].Type) == "totp" {
-					code, err := utils.GenTOTP([]byte(db[i].Secret.Secret))
+					algo := utils.GetHash(db[j].Secret.Algorithm)
+					l.Debugln("Algo:", algo)
+					code, err = utils.GenTOTP([]byte(db[j].Secret.Secret), int64(db[j].Secret.Digits), algo)
 					if err != nil {
 						l.Fatalln(1, err)
 					}
-					fmt.Println(code)
 				} else if strings.ToLower(db[j].Type) == "hotp" {
-					code, err := utils.GenHOTP([]byte(db[i].Secret.Secret), db[i].Secret.Counter)
+					code, err = utils.GenHOTP([]byte(db[j].Secret.Secret), db[j].Secret.Counter)
+					l.Debugln("counter:",db[j].Secret.Counter)
 					if err != nil {
 						l.Fatalln(1, err)
 					}
-					fmt.Println(code)
 					// increase counter by 1 every time this block is called
 					db[j].Secret.Counter++
 
@@ -104,15 +106,21 @@ func Get(args []string) {
 		if len(args[i]) >= 15 {
 			if args[i][:15] == "otpauth://totp/" || args[i][:15] == "otpauth://hotp/" {
 				l.Infoln("argument have uri format - trying to generate code from it")
-				code, err := utils.GenFromURI(args[i])
+				code, err = utils.GenFromURI(args[i])
 				if err != nil {
 					l.Fatalln(1, err)
 				}
-				fmt.Println(code)
+				
 			}
 		}
 	}
-	// TODO add copying code to clipboard
+
+	// print and copy code
+	fmt.Println(code)
+	err = utils.Copy(code)
+	if(err != nil){
+		l.Fatalln(1, err)
+	}
 }
 
 func init() {
