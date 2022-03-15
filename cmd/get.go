@@ -17,7 +17,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/X3NOOO/auther/utils"
@@ -49,11 +52,11 @@ func Get(args []string) {
 	if err != nil {
 		l.Fatalln(1, err)
 	}
-	l.Debugln("json database:", db)
+	l.Debugln("database:", db)
 
 	// decrypt database
 	// TODO add encryption
-	db = db
+	// db = db
 
 	// get through all args
 	for i := 0; i <= len(args)-1; i++ {
@@ -72,7 +75,27 @@ func Get(args []string) {
 						l.Fatalln(1, err)
 					}
 					fmt.Println(code)
-					// TODO add increasing counter by 1 every time this block is called
+					// increase counter by 1 every time this block is called
+					db[j].Secret.Counter++
+
+					// marshal db
+					db_new_json, err := json.Marshal(db)
+					if err != nil {
+						l.Fatalln(1, err)
+					}
+					l.Debugln("new db:", string(db_new_json))
+
+					// encrypt db_new_json
+					// TODO add encryption
+					db_new_encrypted := db_new_json
+
+					// write db_new_encrypted to DB_path
+					stat, err := os.Stat(DB_path)
+					if err != nil {
+						l.Fatalln(1, err)
+					}
+					mode := stat.Mode().Perm()
+					ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
 				}
 			}
 		}

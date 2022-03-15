@@ -58,7 +58,7 @@ func List() {
 	}
 
 	// decrypt database
-	db = db
+	// db = db
 
 	l.Debugln("json database: ", db)
 	l.Debugln("entries in database: ", len(db))
