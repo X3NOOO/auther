@@ -32,5 +32,5 @@ TODO paste here `auther -h` output
 - [X] add `get` options
 - [X] add `add` option
 - [X] add `rem` option
-- [ ] support of different algorithms
+- [X] support of different algorithms
 - [ ] encryption
