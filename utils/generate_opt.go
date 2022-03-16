@@ -15,10 +15,10 @@ import (
 )
 
 // generate totp code based on secret
-func GenTOTP(secret []byte, digits int64, algorithm crypto.Hash)(string, error){
+func GenTOTP(secret []byte, digits int, algorithm crypto.Hash, duration int)(string, error){
 	// totp := gotp.NewDefaultTOTP(secret)
 	// timest := time.Now()
-	totp := gotp.NewTOTPHash(secret, int(digits), 30, 0, algorithm)
+	totp := gotp.NewTOTPHash(secret, int(digits), duration, 0, algorithm)
 	code := totp.Now()
 
 	err := totp.Verify(code, time.Now().Unix())
@@ -30,8 +30,9 @@ func GenTOTP(secret []byte, digits int64, algorithm crypto.Hash)(string, error){
 }
 
 // generate hotp code based on secret
-func GenHOTP(secret []byte, counter int64)(string, error){
-	hotp := gotp.NewDefaultHOTP(secret, counter)
+func GenHOTP(secret []byte, digits int, algorithm crypto.Hash, counter int64)(string, error){
+	// hotp := gotp.NewDefaultHOTP(secret, counter)
+	hotp := gotp.NewHOTPHash(secret, counter, digits, -1, algorithm)
     code := hotp.CurrentOTP()
 
 	err := hotp.Verify(code, counter)
@@ -50,9 +51,9 @@ func GenFromURI(uri string)(string, error){
 	}
 	// check ifuri is totp or hotp
 	if(strings.ToLower(uri[10:14]) == "totp"){
-		return GenTOTP(otp.OTP.GetSecret(), int64(otp.OTP.GetDigits()), otp.OTP.GetHash())
+		return GenTOTP(otp.OTP.GetSecret(), otp.OTP.GetDigits(), otp.OTP.GetHash(), 30)
 	} else if(strings.ToLower(uri[10:14]) == "hotp"){
-		return GenHOTP(otp.OTP.GetSecret(), int64(otp.OTP.GetHash()))
+		return GenHOTP(otp.OTP.GetSecret(), otp.OTP.GetDigits(), otp.OTP.GetHash(), 0) // TODO replace 0 with counter
 	}
 	return "", errors.New("uri isn't valid")
 }

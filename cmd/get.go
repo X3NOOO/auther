@@ -67,12 +67,14 @@ func Get(args []string) {
 				if strings.ToLower(db[j].Type) == "totp" {
 					algo := utils.GetHash(db[j].Secret.Algorithm)
 					l.Debugln("Algo:", algo)
-					code, err = utils.GenTOTP([]byte(db[j].Secret.Secret), int64(db[j].Secret.Digits), algo)
+					code, err = utils.GenTOTP([]byte(db[j].Secret.Secret), db[j].Secret.Digits, algo, db[j].Secret.Period)
 					if err != nil {
 						l.Fatalln(1, err)
 					}
 				} else if strings.ToLower(db[j].Type) == "hotp" {
-					code, err = utils.GenHOTP([]byte(db[j].Secret.Secret), db[j].Secret.Counter)
+					algo := utils.GetHash(db[j].Secret.Algorithm)
+					l.Debugln("Algo:", algo)
+					code, err = utils.GenHOTP([]byte(db[j].Secret.Secret), db[j].Secret.Digits, algo, db[j].Secret.Counter)
 					l.Debugln("counter:",db[j].Secret.Counter)
 					if err != nil {
 						l.Fatalln(1, err)
@@ -107,6 +109,9 @@ func Get(args []string) {
 			if args[i][:15] == "otpauth://totp/" || args[i][:15] == "otpauth://hotp/" {
 				l.Infoln("argument have uri format - trying to generate code from it")
 				code, err = utils.GenFromURI(args[i])
+				if(args[i][:15] == "otpauth://hotp/"){
+					l.Warningln("getting counter from HOTP uri isn't supported yet - using value of 0")
+				}
 				if err != nil {
 					l.Fatalln(1, err)
 				}
