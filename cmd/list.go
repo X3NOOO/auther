@@ -38,7 +38,7 @@ var listCmd = &cobra.Command{
 
 /*
 * 1. read database from DB_path
-* 2. decrypt database 			// TODO or maybe encrypt only secret so you can use list without entering password?
+* 2. decrypt database
 * 3. read decrypted database
 * 4. unmarshal json (or yaml?)
 * 5. print name and issuer

@@ -6,11 +6,12 @@
 |&&' '&&|  dBP BB  dBP dBP   dBP  dBBBBB dBBP   dBBBBK   
 '\&&.&&/'  dBP  BB dBP_dBP   dBP  dBP dB dBP    dBP  BB  
   ",&,"    dBBBBBB dBBBBBP   dBP  dBP dB dBBBBP dBP  dB'  
-
-auther is program to manage your 2fa (totp) tokens released under GNU GPL v3 license.
 ```
 
-## usage
+auther is program to manage your 2fa (totp) tokens released under GNU GPL v3 license.
+
+
+## installation
 
 1. `git clone https://github.com/X3NOOO/auther`
 2. `cd auther`
