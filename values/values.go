@@ -34,12 +34,17 @@ type Db_struct struct {
 	Secret Db_secret_struct `json:"secret"`
 }
 
+// ╔═║║ ║═╔╝║ ║╔═╝╔═║
+// ╔═║║ ║ ║ ╔═║╔═╝╔╔╝
+// ╝ ╝══╝ ╝ ╝ ╝══╝╝ ╝
+
 // this should be shield, if anyone can do better ascii art pls edit it
 const ascii_art string = `
- .==_==.
-:|&&&&&|: FIGLET
-|&&' '&&| NAME
-'\&&.&&/' HERE ` + VERSION +`
-  ",&,"`
+ .==_==.   dBBBBBb    dBP dB dBBBBBB dBP dB dBBB dBBBBBb 
+:|&&&&&|:  BB                                   dBP      
+|&&' '&&|  dBP BB  dBP dBP   dBP  dBBBBB dBBP   dBBBBK   
+'\&&.&&/'  dBP  BB dBP_dBP   dBP  dBP dB dBP    dBP  BB  
+  ",&,"    dBBBBBB dBBBBBP   dBP  dBP dB dBBBBP dBP  dB'  ` + VERSION + `
+`
 
 const HELLO_STRING string = ascii_art + "\nhttps://github.com/X3NOOO/auther\n" + "Copyright (C) 2022 X3NO <X3NO@disroot.org> [https://github.com/X3NOOO]" + "\nauther is program to manage your 2fa (totp) tokens released under GNU GPL v3 license."

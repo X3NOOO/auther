@@ -35,7 +35,7 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "auther",
 	Short: "manage your totp tokens",
-	Long:  `auther is program to manage your 2fa (totp) tokens`,
+	Long:  values.HELLO_STRING,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {

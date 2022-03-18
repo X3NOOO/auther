@@ -65,7 +65,7 @@ func List() {
 
 	// get non-secret info from database and put it into variables so we can print it
 	for i := 0; i <= len(db)-1; i++ {
-		fmt.Println(strings.ToUpper(strconv.Itoa(i+1)+". "+db[i].Type) + ": " + db[i].Name + "@" + db[i].Issuer)
+		fmt.Println(strings.ToUpper(strconv.Itoa(i+1)+". "+db[i].Type) + ": " + db[i].Name + " @ " + db[i].Issuer)
 	}
 
 }

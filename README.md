@@ -1,6 +1,14 @@
 # auther
 
-auther is program to manage your 2fa (totp) tokens
+```ascii
+ .==_==.   dBBBBBb    dBP dB dBBBBBB dBP dB dBBB dBBBBBb 
+:|&&&&&|:  BB                                   dBP      
+|&&' '&&|  dBP BB  dBP dBP   dBP  dBBBBB dBBP   dBBBBK   
+'\&&.&&/'  dBP  BB dBP_dBP   dBP  dBP dB dBP    dBP  BB  
+  ",&,"    dBBBBBB dBBBBBP   dBP  dBP dB dBBBBP dBP  dB'  
+
+auther is program to manage your 2fa (totp) tokens released under GNU GPL v3 license.
+```
 
 ## usage
 
@@ -11,7 +19,26 @@ auther is program to manage your 2fa (totp) tokens
 
 ## usage
 
-TODO paste here `auther -h` output
+```ascii
+Usage:
+  auther [flags]
+  auther [command]
+
+Available Commands:
+  add         add token
+  completion  Generate the autocompletion script for the specified shell
+  get         Generate otp codes
+  help        Help about any command
+  list        List information
+  rem         remove token
+
+Flags:
+  -d, --database string   path to database (default "$HOME/.auther_db")
+  -h, --help              help for auther
+  -v, --verbose int       verbosity of output (0-5) (default 3)
+
+Use "auther [command] --help" for more information about a command.
+```
 
 ## donation
 
