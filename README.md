@@ -4,7 +4,10 @@ auther is program to manage your 2fa (totp) tokens
 
 ## usage
 
-1. `go get github.com/X3NOOO/auther`
+1. `git clone https://github.com/X3NOOO/auther`
+2. `cd auther`
+3. `make release`
+4. `make install`
 
 ## usage
 

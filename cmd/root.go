@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"os"
 
 	"github.com/X3NOOO/auther/values"
@@ -41,10 +42,14 @@ var rootCmd = &cobra.Command{
 		l := logger.NewLogger("root.go")
 		l.SetVerbosity(Verbose)
 		l.Debugln("Verbosity:", Verbose)
-		if !fileExists(DB_path) {
-			l.Infoln(DB_path + " does not exist")
-		}
+		
+		// hello message
+		hello()
 	},
+}
+
+func hello(){
+	fmt.Println(values.HELLO_STRING)
 }
 
 func fileExists(name string) bool {
@@ -76,6 +81,6 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.PersistentFlags().IntVarP(&Verbose, "verbose", "v", -1, "verbosity of output (0-5)")
+	rootCmd.PersistentFlags().IntVarP(&Verbose, "verbose", "v", 3, "verbosity of output (0-5)")
 	rootCmd.PersistentFlags().StringVarP(&DB_path, "database", "d", values.DB_path, "path to database")
 }
