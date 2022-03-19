@@ -41,8 +41,8 @@ var (
 // addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:   "add",
-	Short: "add token",
-	Long:  `add otp token to database`,
+	Short: "Add token",
+	Long:  `Add otp token to database`,
 	Run: func(cmd *cobra.Command, args []string) {
 		Add()
 	},
@@ -62,10 +62,15 @@ func Add() {
 	l.Debugln("add called")
 
 	// read database
-	db, err := utils.ReadDB(DB_path)
+	db_encrypted, err := utils.ReadDB(DB_path)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
+
+	// decrypt db
+	// TODO add encryption
+	db := db_encrypted
+
 	l.Debugln("json database:", db)
 	l.Debugln("database length:", len(db))
 

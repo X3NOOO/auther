@@ -34,7 +34,7 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "auther",
-	Short: "manage your totp tokens",
+	Short: "Manage your otp tokens",
 	Long:  values.HELLO_STRING,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:

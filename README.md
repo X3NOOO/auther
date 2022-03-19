@@ -8,7 +8,7 @@
   ",&,"    dBBBBBB dBBBBBP   dBP  dBP dB dBBBBP dBP  dB'  
 ```
 
-auther is program to manage your 2fa (totp) tokens released under GNU GPL v3 license.
+auther is program to manage your 2fa (totp and hotp) tokens released under GNU GPL v3 license.
 
 
 ## installation

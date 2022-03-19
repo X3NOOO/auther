@@ -33,8 +33,8 @@ import (
 // remCmd represents the rem command
 var remCmd = &cobra.Command{
 	Use:   "rem",
-	Short: "remove token",
-	Long:  `remove otp token from database`,
+	Short: "Remove token",
+	Long:  `Remove otp token from database`,
 	Run: func(cmd *cobra.Command, args []string) {
 		Rem(args)
 	},
@@ -51,10 +51,15 @@ func Rem(args []string) {
 	l.Debugln("rem called")
 
 	// read database
-	db, err := utils.ReadDB(DB_path)
+	db_encrypted, err := utils.ReadDB(DB_path)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
+
+	// decrypt database
+	// TODO add encryption
+	db := db_encrypted
+
 	l.Debugln("json database:", db)
 
 	var db_new []values.Db_struct = db
@@ -84,7 +89,6 @@ func Rem(args []string) {
 	// encrypt db_new_json
 	// TODO add encryption
 	db_new_encrypted := db_new_json
-	// _ = db_new_encrypted
 
 	// write db_new_json to DB_path
 	stat, err := os.Stat(DB_path)
