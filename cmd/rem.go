@@ -91,12 +91,14 @@ func Rem(args []string) {
 	db_new_encrypted := db_new_json
 
 	// write db_new_json to DB_path
-	stat, err := os.Stat(DB_path)
+	if(!Testing){
+		stat, err := os.Stat(DB_path)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
 	mode := stat.Mode().Perm()
 	ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
+	}
 }
 
 func init() {

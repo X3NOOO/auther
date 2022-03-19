@@ -17,7 +17,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
-	"errors"
+	// "errors"
 	"fmt"
 	"os"
 
@@ -29,6 +29,7 @@ import (
 var (
 	Verbose int
 	DB_path string
+	Testing bool
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -52,16 +53,16 @@ func hello(){
 	fmt.Println(values.HELLO_STRING)
 }
 
-func fileExists(name string) bool {
-	_, err := os.Stat(name)
-	if err == nil {
-		return true
-	}
-	if errors.Is(err, os.ErrNotExist) {
-		return false
-	}
-	return false
-}
+//func fileExists(name string) bool {
+//	_, err := os.Stat(name)
+//	if err == nil {
+//		return true
+//	}
+//	if errors.Is(err, os.ErrNotExist) {
+//		return false
+//	}
+//	return false
+//}
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -83,4 +84,7 @@ func init() {
 	// when this action is called directly.
 	rootCmd.PersistentFlags().IntVarP(&Verbose, "verbose", "v", 3, "verbosity of output (0-5)")
 	rootCmd.PersistentFlags().StringVarP(&DB_path, "database", "d", values.DB_path, "path to database")
+	rootCmd.PersistentFlags().BoolVar(&Testing, "testing", false, "disable writing to database")
+
 }
+

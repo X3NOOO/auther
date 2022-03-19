@@ -174,7 +174,7 @@ func Get(args []string) {
 	fmt.Println(code)
 	err = utils.Copy(code)
 	if(err != nil){
-		l.Fatalln(1, err)
+		l.Warningln(1, err)
 	}
 }
 
