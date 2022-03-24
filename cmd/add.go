@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -91,7 +92,7 @@ func Add() {
 	// db_new = db + new_entry
 	db_new := append(db, new_entry)
 	l.Debugln("new_entry:", db_new)
-
+ 
 	// convert db_new to json
 	db_new_json, err := json.Marshal(db_new)
 	if err != nil {
@@ -101,7 +102,17 @@ func Add() {
 
 	// encrypt db_new_json
 	// TODO add encryption
-	db_new_encrypted := db_new_json
+	fmt.Print("Password: ")
+	key, err := utils.GetKey()
+	if(err!=nil){
+		l.Fatalln(1, err)
+	}
+	fmt.Println("")
+	db_new_encrypted, err := utils.Encrypt(db_new_json, key)
+	if(err != nil){
+		l.Fatalln(1, err)
+	}
+	l.Debugln("encrypted db:\n", string(db_new_encrypted))
 
 	// write db_new_encrypted to DB_path
 	if(!Testing){
@@ -134,7 +145,7 @@ func init() {
 	addCmd.Flags().StringVarP(&flag_algorithm, "algorithm", "a", "SHA1", "algorithm of your 2fa token")
 	addCmd.Flags().IntVarP(&flag_period, "period", "p", 30, "period [totp only]")
 	addCmd.Flags().IntVarP(&flag_counter, "counter", "c", 0, "counter [hotp only]")
-	addCmd.Flags().IntVarP(&flag_digits, "digits", "g", 0, "digits [totp only]")
+	addCmd.Flags().IntVarP(&flag_digits, "digits", "g", 0, "digits")
 
 	addCmd.MarkFlagRequired("name")
 	addCmd.MarkFlagRequired("secret")
