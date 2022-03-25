@@ -52,7 +52,13 @@ func List() {
 	l.Debugln("list called")
 
 	// read database
-	db, err := utils.ReadDB(DB_path)
+	fmt.Print("Password: ")
+	key, err := utils.GetKey()
+	if(err!=nil){
+		l.Fatalln(1, err)
+	}
+	fmt.Println("")
+	db, err := utils.ReadDB(DB_path, key)
 	if err != nil {
 		l.Fatalln(1, err)
 	}

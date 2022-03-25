@@ -49,15 +49,18 @@ func Get(args []string) {
 	l.Debugln("args:", args)
 
 	// read database
-	db, err := utils.ReadDB(DB_path)
+	// get key
+	fmt.Print("Password: ")
+	key, err := utils.GetKey()
+	if(err!=nil){
+		l.Fatalln(1, err)
+	}
+	fmt.Println("")
+	db, err := utils.ReadDB(DB_path, key)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
 	l.Debugln("database:", db)
-
-	// decrypt database
-	// TODO add encryption
-	// db = db
 
 	// get through all args
 	var code string = ""
@@ -91,16 +94,24 @@ func Get(args []string) {
 					l.Debugln("new db:", string(db_new_json))
 
 					// encrypt db_new_json
-					// TODO add encryption
-					db_new_encrypted := db_new_json
-
-					// write db_new_encrypted to DB_path
-					stat, err := os.Stat(DB_path)
-					if err != nil {
+					fmt.Print("Password: ")
+					key, err := utils.GetKey()
+					if(err!=nil){
 						l.Fatalln(1, err)
 					}
-					mode := stat.Mode().Perm()
-					ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
+					fmt.Println("")
+					db_new_encrypted, err := utils.Encrypt(db_new_json, key)
+					if(err!=nil){
+						l.Warningln("error while encrypting db: ", err)
+					} else {
+						// write db_new_encrypted to DB_path
+						stat, err := os.Stat(DB_path)
+						if err != nil {
+							l.Fatalln(1, err)
+						}
+						mode := stat.Mode().Perm()
+						ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
+					}
 				}
 			}
 		}
@@ -152,16 +163,24 @@ func Get(args []string) {
 					l.Debugln("new db:", string(db_new_json))
 
 					// encrypt db_new_json
-					// TODO add encryption
-					db_new_encrypted := db_new_json
-
-					// write db_new_encrypted to DB_path
-					stat, err := os.Stat(DB_path)
-					if err != nil {
+					fmt.Print("Password: ")
+					key, err := utils.GetKey()
+					if(err!=nil){
 						l.Fatalln(1, err)
 					}
-					mode := stat.Mode().Perm()
-					ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
+					fmt.Println("")
+					db_new_encrypted, err := utils.Encrypt(db_new_json, key)
+					if(err!=nil){
+						l.Warningln("error while encrypting db: ", err)
+					} else {
+						// write db_new_encrypted to DB_path
+						stat, err := os.Stat(DB_path)
+						if err != nil {
+							l.Fatalln(1, err)
+						}
+						mode := stat.Mode().Perm()
+						ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
+					}
 				}
 			} else {
 				// if args[i] is not valid entry

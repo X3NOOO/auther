@@ -62,17 +62,21 @@ func Add() {
 	l.SetVerbosity(Verbose)
 	l.Debugln("add called")
 
+	// get key
+	fmt.Print("Password: ")
+	key, err := utils.GetKey()
+	if(err!=nil){
+		l.Fatalln(1, err)
+	}
+	fmt.Println("")
+
 	// read database
-	db_encrypted, err := utils.ReadDB(DB_path)
+	db, err := utils.ReadDB(DB_path, key)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
 
-	// decrypt db
-	// TODO add encryption
-	db := db_encrypted
-
-	l.Debugln("json database:", db)
+	l.Debugln("json database:\n", db)
 	l.Debugln("database length:", len(db))
 
 	// create object based on flags
@@ -101,13 +105,6 @@ func Add() {
 	l.Debugln("new db:", string(db_new_json))
 
 	// encrypt db_new_json
-	// TODO add encryption
-	fmt.Print("Password: ")
-	key, err := utils.GetKey()
-	if(err!=nil){
-		l.Fatalln(1, err)
-	}
-	fmt.Println("")
 	db_new_encrypted, err := utils.Encrypt(db_new_json, key)
 	if(err != nil){
 		l.Fatalln(1, err)
