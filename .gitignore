@@ -19,3 +19,5 @@ tests/
 test.*
 test_*
 test*
+bin/
+.vscode/

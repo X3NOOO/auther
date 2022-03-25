@@ -38,7 +38,7 @@ var listCmd = &cobra.Command{
 
 /*
 * 1. read database from DB_path
-* 2. decrypt database 			// TODO or maybe encrypt only secret so you can use list without entering password?
+* 2. decrypt database
 * 3. read decrypted database
 * 4. unmarshal json (or yaml?)
 * 5. print name and issuer
@@ -52,7 +52,13 @@ func List() {
 	l.Debugln("list called")
 
 	// read database
-	db, err := utils.ReadDB(DB_path)
+	fmt.Print("Password: ")
+	key, err := utils.GetKey()
+	if(err!=nil){
+		l.Fatalln(1, err)
+	}
+	fmt.Println("")
+	db, err := utils.ReadDB(DB_path, key)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
@@ -65,7 +71,7 @@ func List() {
 
 	// get non-secret info from database and put it into variables so we can print it
 	for i := 0; i <= len(db)-1; i++ {
-		fmt.Println(strings.ToUpper(strconv.Itoa(i+1)+". "+db[i].Type) + ": " + db[i].Name + "@" + db[i].Issuer)
+		fmt.Println(strings.ToUpper(strconv.Itoa(i+1)+". "+db[i].Type) + ": " + db[i].Name + " @ " + db[i].Issuer)
 	}
 
 }

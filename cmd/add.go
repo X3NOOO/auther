@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -41,8 +42,8 @@ var (
 // addCmd represents the add command
 var addCmd = &cobra.Command{
 	Use:   "add",
-	Short: "add token",
-	Long:  `add otp token to database`,
+	Short: "Add token",
+	Long:  `Add otp token to database`,
 	Run: func(cmd *cobra.Command, args []string) {
 		Add()
 	},
@@ -61,12 +62,21 @@ func Add() {
 	l.SetVerbosity(Verbose)
 	l.Debugln("add called")
 
+	// get key
+	fmt.Print("Password: ")
+	key, err := utils.GetKey()
+	if(err!=nil){
+		l.Fatalln(1, err)
+	}
+	fmt.Println("")
+
 	// read database
-	db, err := utils.ReadDB(DB_path)
+	db, err := utils.ReadDB(DB_path, key)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
-	l.Debugln("json database:", db)
+
+	l.Debugln("json database:\n", db)
 	l.Debugln("database length:", len(db))
 
 	// create object based on flags
@@ -86,7 +96,7 @@ func Add() {
 	// db_new = db + new_entry
 	db_new := append(db, new_entry)
 	l.Debugln("new_entry:", db_new)
-
+ 
 	// convert db_new to json
 	db_new_json, err := json.Marshal(db_new)
 	if err != nil {
@@ -95,16 +105,21 @@ func Add() {
 	l.Debugln("new db:", string(db_new_json))
 
 	// encrypt db_new_json
-	// TODO add encryption
-	db_new_encrypted := db_new_json
-
-	// write db_new_encrypted to DB_path
-	stat, err := os.Stat(DB_path)
-	if err != nil {
+	db_new_encrypted, err := utils.Encrypt(db_new_json, key)
+	if(err != nil){
 		l.Fatalln(1, err)
 	}
-	mode := stat.Mode().Perm()
-	ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
+	l.Debugln("encrypted db:\n", string(db_new_encrypted))
+
+	// write db_new_encrypted to DB_path
+	if(!Testing){
+		stat, err := os.Stat(DB_path)
+		if err != nil {
+			l.Fatalln(1, err)
+		}
+		mode := stat.Mode().Perm()
+		ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
+	}
 }
 
 func init() {
@@ -127,7 +142,7 @@ func init() {
 	addCmd.Flags().StringVarP(&flag_algorithm, "algorithm", "a", "SHA1", "algorithm of your 2fa token")
 	addCmd.Flags().IntVarP(&flag_period, "period", "p", 30, "period [totp only]")
 	addCmd.Flags().IntVarP(&flag_counter, "counter", "c", 0, "counter [hotp only]")
-	addCmd.Flags().IntVarP(&flag_digits, "digits", "g", 0, "digits [totp only]")
+	addCmd.Flags().IntVarP(&flag_digits, "digits", "g", 0, "digits")
 
 	addCmd.MarkFlagRequired("name")
 	addCmd.MarkFlagRequired("secret")

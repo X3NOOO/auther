@@ -7,6 +7,7 @@ require (
 	github.com/atotto/clipboard v0.1.4
 	github.com/spf13/cobra v1.3.0
 	github.com/uaraven/gotp v0.1.0
+	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 )
 
 require (

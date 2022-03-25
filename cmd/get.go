@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/X3NOOO/auther/utils"
@@ -48,18 +49,21 @@ func Get(args []string) {
 	l.Debugln("args:", args)
 
 	// read database
-	db, err := utils.ReadDB(DB_path)
+	// get key
+	fmt.Print("Password: ")
+	key, err := utils.GetKey()
+	if(err!=nil){
+		l.Fatalln(1, err)
+	}
+	fmt.Println("")
+	db, err := utils.ReadDB(DB_path, key)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
 	l.Debugln("database:", db)
 
-	// decrypt database
-	// TODO add encryption
-	// db = db
-
 	// get through all args
-	var code string
+	var code string = ""
 	for i := 0; i <= len(args)-1; i++ {
 		// get through all database names
 		for j := 0; j <= len(db)-1; j++ {
@@ -90,22 +94,24 @@ func Get(args []string) {
 					l.Debugln("new db:", string(db_new_json))
 
 					// encrypt db_new_json
-					// TODO add encryption
-					db_new_encrypted := db_new_json
-
-					// write db_new_encrypted to DB_path
-					stat, err := os.Stat(DB_path)
-					if err != nil {
-						l.Fatalln(1, err)
+					db_new_encrypted, err := utils.Encrypt(db_new_json, key)
+					if(err!=nil){
+						l.Warningln("error while encrypting db: ", err)
+					} else {
+						// write db_new_encrypted to DB_path
+						stat, err := os.Stat(DB_path)
+						if err != nil {
+							l.Fatalln(1, err)
+						}
+						mode := stat.Mode().Perm()
+						ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
 					}
-					mode := stat.Mode().Perm()
-					ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
 				}
 			}
 		}
 
-		// if argument have uri-format get code from it
-		if len(args[i]) >= 15 {
+		// if code still is nil and argument have uri-format get code from it
+		if code == "" && len(args[i]) >= 15{
 			if args[i][:15] == "otpauth://totp/" || args[i][:15] == "otpauth://hotp/" {
 				l.Infoln("argument have uri format - trying to generate code from it")
 				code, err = utils.GenFromURI(args[i])
@@ -118,13 +124,64 @@ func Get(args []string) {
 				
 			}
 		}
+
+		// if code still is nil and args[i] is a digit get code from db[i]y
+		if code == "" {
+			num, err := strconv.Atoi(args[i])
+
+			if(!(err != nil || num <= 0 || num > len(db))){
+				// if args[num-1] is valid entry
+				if strings.ToLower(db[num-1].Type) == "totp" {
+					algo := utils.GetHash(db[num-1].Secret.Algorithm)
+					l.Debugln("Algo:", algo)
+					code, err = utils.GenTOTP([]byte(db[num-1].Secret.Secret), db[num-1].Secret.Digits, algo, db[num-1].Secret.Period)
+					if err != nil {
+						l.Fatalln(1, err)
+					}
+				} else if strings.ToLower(db[num-1].Type) == "hotp" {
+					algo := utils.GetHash(db[num-1].Secret.Algorithm)
+					l.Debugln("Algo:", algo)
+					code, err = utils.GenHOTP([]byte(db[num-1].Secret.Secret), db[num-1].Secret.Digits, algo, db[num-1].Secret.Counter)
+					l.Debugln("counter:",db[num-1].Secret.Counter)
+					if err != nil {
+						l.Fatalln(1, err)
+					}
+					// increase counter by 1 every time this block is called
+					db[num-1].Secret.Counter++
+
+					// marshal db
+					db_new_json, err := json.Marshal(db)
+					if err != nil {
+						l.Fatalln(1, err)
+					}
+					l.Debugln("new db:", string(db_new_json))
+
+					// encrypt db_new_json
+					db_new_encrypted, err := utils.Encrypt(db_new_json, key)
+					if(err!=nil){
+						l.Warningln("error while encrypting db: ", err)
+					} else {
+						// write db_new_encrypted to DB_path
+						stat, err := os.Stat(DB_path)
+						if err != nil {
+							l.Fatalln(1, err)
+						}
+						mode := stat.Mode().Perm()
+						ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
+					}
+				}
+			} else {
+				// if args[i] is not valid entry
+				l.Warning(args[i],"has not been recognized as a database entry")
+			}
+		}
 	}
 
 	// print and copy code
 	fmt.Println(code)
 	err = utils.Copy(code)
 	if(err != nil){
-		l.Fatalln(1, err)
+		l.Warningln(1, err)
 	}
 }
 

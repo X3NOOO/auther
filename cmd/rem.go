@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -33,8 +34,8 @@ import (
 // remCmd represents the rem command
 var remCmd = &cobra.Command{
 	Use:   "rem",
-	Short: "remove token",
-	Long:  `remove otp token from database`,
+	Short: "Remove token",
+	Long:  `Remove otp token from database`,
 	Run: func(cmd *cobra.Command, args []string) {
 		Rem(args)
 	},
@@ -51,10 +52,18 @@ func Rem(args []string) {
 	l.Debugln("rem called")
 
 	// read database
-	db, err := utils.ReadDB(DB_path)
+	// get key
+	fmt.Print("Password: ")
+	key, err := utils.GetKey()
+	if(err!=nil){
+		l.Fatalln(1, err)
+	}
+	fmt.Println("")
+	db, err := utils.ReadDB(DB_path, key)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
+
 	l.Debugln("json database:", db)
 
 	var db_new []values.Db_struct = db
@@ -82,17 +91,21 @@ func Rem(args []string) {
 	l.Debugln("db_new_json:", string(db_new_json))
 
 	// encrypt db_new_json
-	// TODO add encryption
-	db_new_encrypted := db_new_json
-	// _ = db_new_encrypted
+	db_new_encrypted, err := utils.Encrypt(db_new_json, key)
+	if(err != nil){
+		l.Fatalln(1, "while encrypting db:", err)
+	}
+	l.Debugln("encrypted db:\n", string(db_new_encrypted))
 
 	// write db_new_json to DB_path
-	stat, err := os.Stat(DB_path)
+	if(!Testing){
+		stat, err := os.Stat(DB_path)
 	if err != nil {
 		l.Fatalln(1, err)
 	}
 	mode := stat.Mode().Perm()
 	ioutil.WriteFile(DB_path, []byte(db_new_encrypted), mode)
+	}
 }
 
 func init() {

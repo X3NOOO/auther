@@ -17,7 +17,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
-	"errors"
+	// "errors"
+	"fmt"
 	"os"
 
 	"github.com/X3NOOO/auther/values"
@@ -28,35 +29,40 @@ import (
 var (
 	Verbose int
 	DB_path string
+	Testing bool
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "auther",
-	Short: "manage your totp tokens",
-	Long:  `auther is program to manage your 2fa (totp) tokens`,
+	Short: "Manage your otp tokens",
+	Long:  values.HELLO_STRING,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
 		l := logger.NewLogger("root.go")
 		l.SetVerbosity(Verbose)
 		l.Debugln("Verbosity:", Verbose)
-		if !fileExists(DB_path) {
-			l.Infoln(DB_path + " does not exist")
-		}
+		
+		// hello message
+		hello()
 	},
 }
 
-func fileExists(name string) bool {
-	_, err := os.Stat(name)
-	if err == nil {
-		return true
-	}
-	if errors.Is(err, os.ErrNotExist) {
-		return false
-	}
-	return false
+func hello(){
+	fmt.Println(values.HELLO_STRING)
 }
+
+//func fileExists(name string) bool {
+//	_, err := os.Stat(name)
+//	if err == nil {
+//		return true
+//	}
+//	if errors.Is(err, os.ErrNotExist) {
+//		return false
+//	}
+//	return false
+//}
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -76,6 +82,9 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.PersistentFlags().IntVarP(&Verbose, "verbose", "v", -1, "verbosity of output (0-5)")
+	rootCmd.PersistentFlags().IntVarP(&Verbose, "verbose", "v", 3, "verbosity of output (0-5)")
 	rootCmd.PersistentFlags().StringVarP(&DB_path, "database", "d", values.DB_path, "path to database")
+	rootCmd.PersistentFlags().BoolVar(&Testing, "testing", false, "disable writing to database")
+
 }
+

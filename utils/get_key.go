@@ -17,36 +17,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package utils
 
 import (
-	"encoding/json"
-	"io/ioutil"
+	"crypto/sha256"
+	"syscall"
 
-	"github.com/X3NOOO/auther/values"
+	"golang.org/x/term"
 )
 
-// read database, decrypt it and return struct with it
-func ReadDB(path string, key []byte)([]values.Db_struct, error){
-	// read
-	db_encrypted, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	// decrypt
-	db_decrypted, err := Decrypt(db_encrypted, key)
+// return password from stdin hashed with sha256
+func GetKey()([]byte,error){
+	pass, err := term.ReadPassword(int(syscall.Stdin))
 	if(err != nil){
-		return nil, err
+	    return nil, err
 	}
-
-	// get json
-	var db_json []values.Db_struct
-	err = json.Unmarshal(db_decrypted, &db_json)
-	if err != nil {
-		// assuming that db isn't encrypted
-		err = json.Unmarshal(db_encrypted, &db_json)
-		if(err != nil){
-			return nil, err
-		}
-	}
-
-	return db_json, nil
+	var pass256 = sha256.Sum256(pass);	
+	pass256_slice := pass256[:]
+	return pass256_slice, nil
 }
