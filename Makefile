@@ -21,16 +21,16 @@ user_install_path = $(HOME)/.local/bin
 root_install_path = /usr/local/bin
 
 release:
-	go build -o $$(bin_path)/$(bin_name) main.go
+	go build -o $(bin_path)/$(bin_name) main.go
 
 install:
 	if test $(user) != "root"; \
         then \
             echo "You are not root. Installing to user path $(user_install_path)"; \
-			cp $$(bin_path)/$(bin_name) $(user_install_path); \
+			cp $(bin_path)/$(bin_name) $(user_install_path); \
         else \
             echo "Installing to $(user_install_path)"; \
-        	cp $$(bin_path)/$(bin_name) $(root_install_path); \
+        	cp $(bin_path)/$(bin_name) $(root_install_path); \
         fi
 
 uninstall:
