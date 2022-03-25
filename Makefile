@@ -21,21 +21,19 @@ user_install_path = $(HOME)/.local/bin
 root_install_path = /usr/local/bin
 
 release:
-	go build -o $(bin_path)/$(bin_name) main.go
+	go build -o $$(bin_path)/$(bin_name) main.go
 
 install:
-	echo $(user_install_path);
 	if test $(user) != "root"; \
         then \
             echo "You are not root. Installing to user path $(user_install_path)"; \
-			cp $(bin_path)/$(bin_name) $(user_install_path); \
+			cp $$(bin_path)/$(bin_name) $(user_install_path); \
         else \
             echo "Installing to $(user_install_path)"; \
-        	cp $(bin_path)/$(bin_name) $(root_install_path); \
+        	cp $$(bin_path)/$(bin_name) $(root_install_path); \
         fi
 
 uninstall:
-	echo $(user_install_path);
 	if test $(user) != "root"; \
         then \
             echo "You are not root. Uninstalling from user path $(user_install_path)"; \
@@ -44,3 +42,22 @@ uninstall:
             echo "Uninstalling from $(user_install_path)"; \
         	rm $(root_install_path)/$(bin_name); \
         fi
+
+all:
+	CGO_ENABLED=0 GOOS=linux    GOARCH=amd64    go build -ldflags '-w -extldflags=-static' -o $(bin_path)/$(bin_name)-lin-amd64     ./main.go
+	CGO_ENABLED=0 GOOS=linux    GOARCH=386 		go build -ldflags '-w -extldflags=-static' -o $(bin_path)/$(bin_name)-lin-386 		./main.go
+	CGO_ENABLED=0 GOOS=linux    GOARCH=arm 		go build -ldflags '-w -extldflags=-static' -o $(bin_path)/$(bin_name)-lin-arm 		./main.go
+	CGO_ENABLED=0 GOOS=linux    GOARCH=arm64 	go build -ldflags '-w -extldflags=-static' -o $(bin_path)/$(bin_name)-lin-arm64 	./main.go
+
+	CGO_ENABLED=0 GOOS=windows 	GOARCH=amd64 	go build -ldflags '-w -extldflags=-static' -o $(bin_path)/$(bin_name)-win-amd64.exe ./main.go
+	CGO_ENABLED=0 GOOS=windows 	GOARCH=386 		go build -ldflags '-w -extldflags=-static' -o $(bin_path)/$(bin_name)-win-386.exe 	./main.go
+
+	CGO_ENABLED=0 GOOS=darwin 	GOARCH=amd64 	go build -ldflags '-w -extldflags=-static' -o $(bin_path)/$(bin_name)-darw-amd64	./main.go
+	CGO_ENABLED=0 GOOS=darwin 	GOARCH=arm64 	go build -ldflags '-w -extldflags=-static' -o $(bin_path)/$(bin_name)-darw-arm64  	./main.go
+
+	CGO_ENABLED=0 GOOS=freebsd 	GOARCH=amd64 	go build -ldflags '-w -extldflags=-static' -o $(bin_path)/$(bin_name)-freebsd-amd64	./main.go
+	CGO_ENABLED=0 GOOS=freebsd 	GOARCH=386 		go build -ldflags '-w -extldflags=-static' -o $(bin_path)/$(bin_name)-freebsd-386 	./main.go
+	CGO_ENABLED=0 GOOS=freebsd 	GOARCH=arm 		go build -ldflags '-w -extldflags=-static' -o $(bin_path)/$(bin_name)-freebsd-arm 	./main.go
+	CGO_ENABLED=0 GOOS=freebsd 	GOARCH=arm64 	go build -ldflags '-w -extldflags=-static' -o $(bin_path)/$(bin_name)-freebsd-arm64 ./main.go
+    
+	sha512sum $(bin_path)/* >> $(bin_path)/SHA512SUMS

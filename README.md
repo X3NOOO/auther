@@ -10,13 +10,20 @@
 
 auther is program to manage your 2fa (totp and hotp) tokens released under GNU GPL v3 license.
 
-
 ## installation
 
 1. `git clone https://github.com/X3NOOO/auther`
 2. `cd auther`
 3. `make release`
 4. `make install`
+
+or just grab binary from releases
+
+## features
+
+- Support for both TOPT and HOTP
+- Encrypted database
+- Shell completion (using [cobra](https://github.com/spf13/cobra))
 
 ## usage
 
@@ -26,16 +33,17 @@ Usage:
   auther [command]
 
 Available Commands:
-  add         add token
+  add         Add token
   completion  Generate the autocompletion script for the specified shell
   get         Generate otp codes
   help        Help about any command
   list        List information
-  rem         remove token
+  rem         Remove token
 
 Flags:
-  -d, --database string   path to database (default "$HOME/.auther_db")
+  -d, --database string   path to database (default "/home/anon/.auther_db")
   -h, --help              help for auther
+      --testing           disable writing to database
   -v, --verbose int       verbosity of output (0-5) (default 3)
 
 Use "auther [command] --help" for more information about a command.
@@ -48,13 +56,3 @@ Use "auther [command] --help" for more information about a command.
 - BTC: `bc1q08p6wd86806uf2cj95j4pcgl584jvaqkhs37pp`
 - ETH: `0x84FfD8524a66505344A1cbfC3212392Db5b2474d`
 - LTC: `Lew3VmzbkaxzoYG3jNHf263oEDMrQ3ecN1`
-
-## TODO
-
-- [X] add `list` option
-- [X] add `--database`/`-d` flag
-- [X] add `get` options
-- [X] add `add` option
-- [X] add `rem` option
-- [X] support of different algorithms
-- [ ] encryption

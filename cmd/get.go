@@ -94,12 +94,6 @@ func Get(args []string) {
 					l.Debugln("new db:", string(db_new_json))
 
 					// encrypt db_new_json
-					fmt.Print("Password: ")
-					key, err := utils.GetKey()
-					if(err!=nil){
-						l.Fatalln(1, err)
-					}
-					fmt.Println("")
 					db_new_encrypted, err := utils.Encrypt(db_new_json, key)
 					if(err!=nil){
 						l.Warningln("error while encrypting db: ", err)
@@ -163,12 +157,6 @@ func Get(args []string) {
 					l.Debugln("new db:", string(db_new_json))
 
 					// encrypt db_new_json
-					fmt.Print("Password: ")
-					key, err := utils.GetKey()
-					if(err!=nil){
-						l.Fatalln(1, err)
-					}
-					fmt.Println("")
 					db_new_encrypted, err := utils.Encrypt(db_new_json, key)
 					if(err!=nil){
 						l.Warningln("error while encrypting db: ", err)
